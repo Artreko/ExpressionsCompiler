@@ -1,7 +1,7 @@
 from math import *
 import lexemes_tree as lt
 
-my_expression = "S = ((1 / 2) * (a * b)) * sin(al)"
+my_expression = "S = ((1 / 2) * (a * b)) * abs(al)"
 
 
 def print_dict(my_dict):
@@ -125,10 +125,10 @@ if __name__ == "__main__":
     result_value = list(tetrads_values.values())[-1]
     print("Литералы")
     for var, value in lex_tree.variables_dict.items():
-        print(f'{var}: {"int" if value.isdecimal() else "float"}')
+        print(f'{var}: {"int" if "." not in value else "float"}')
     for word in words:
         if word not in lt.FUNCS + lt.OPERATORS + lt.BRACKETS and not word.isalnum():
-            print(f'{word}: {"int" if word.isdecimal() else "float"}')
+            print(f'{word}: {"int" if "." not in word else "float"}')
     print("Тетрады")
     print_dict(tetrads_dict)
     print("Значение тетрад")
