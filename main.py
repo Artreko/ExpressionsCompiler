@@ -4,7 +4,6 @@ import lexemes_tree as lt
 my_expression = "S = ((1 / 2) * (a * b)) * sin(al)"
 
 
-
 def print_dict(my_dict):
     for key, value in my_dict.items():
         print(f'{key}: {value}')
