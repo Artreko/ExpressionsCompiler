@@ -1,5 +1,6 @@
 from sys import maxsize
 
+BRACKETS = ['(', ')']
 OPERATORS = ['=', '/', '*', '+', '-', '^']
 FUNCS = ["sin", "cos", "abs", "sqrt"]
 ALLOWED_TYPE = ["operator", "function"]
@@ -17,7 +18,13 @@ class LexNode:
             elif self.value in FUNCS:
                 self.lex_type = "function"
             else:
-                self.lex_type = "value"
+                if str.isalnum(self.value) and not str.isdigit(self.value):
+                    if str.isidentifier(self.value):
+                        self.lex_type = "variable"
+                    else:
+                        raise RuntimeError("Указана переменная не соответсвующая переменная!")
+                else:
+                    self.lex_type = "value"
 
     def __str__(self) -> str:
         return str(self.value)
@@ -29,6 +36,7 @@ class LexNode:
 class LexTree:
     def __init__(self, tree=None) -> None:
         self.root = tree.root if tree else None
+        self.variables_dict = {}
 
     def __del__(self) -> None:
         self._remove_values(self.root)
@@ -101,7 +109,20 @@ class LexTree:
         if node:
             self.post_traverse(node.left)
             self.post_traverse(node.right)
-            print(node.value, end=' ')
+            print(node, end=' ')
+
+    def get_variables_values(self, node: LexNode,):
+        if node:
+            if node is not self.root:
+                self.get_variables_values(node.left)
+            self.get_variables_values(node.right)
+            if node.lex_type == 'variable':
+                self.variables_dict[node.value] = \
+                    input(f'{node.value}: ')
+
+    def build_tree(self, lexemes):
+        for lex in lexemes:
+            self.add(lex)
 
     @staticmethod
     def get_all_lexemes_list(expr):
@@ -113,7 +134,7 @@ class LexTree:
                 if words[current_word_idx]:
                     words.append("")
                     current_word_idx += 1
-            elif el in OPERATORS + ['(', ')']:
+            elif el in OPERATORS + BRACKETS:
                 if words[current_word_idx]:
                     current_word_idx += 1
                     words.append("")
@@ -141,7 +162,7 @@ class LexTree:
 
     @staticmethod
     def validate(words):
-        return any([True if x not in '()' else False for x in words])
+        return any([True if x not in BRACKETS else False for x in words])
 
     @staticmethod
     def tree_order(words, levels):
@@ -149,13 +170,12 @@ class LexTree:
         min_level_idx = -1
         order = []
         for idx, level in enumerate(levels):
-            if words[idx] not in '()' and level < min_level:
+            if words[idx] not in BRACKETS and level < min_level:
                 min_level = level
                 min_level_idx = idx
         # print(min_level, words[min_level_idx])
         order.append(words[min_level_idx])
         # left
-        # print("before:", order)
         # print("l:", words[:min_level_idx])
 
         if LexTree.validate(words[:min_level_idx]):

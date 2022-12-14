@@ -190,7 +190,7 @@ if __name__ == '__main__':
     replacing_variables()
     lexical_analysis()
     print("\nПостфискная форма:", *postfix_form(expression), '\n')
-
+    print(*expression.split()[2:], sep='\t')
     # заполняем массивы t, exp
     for el in dict_variables:
         expression = expression.replace(el, str(dict_variables[el]))
@@ -199,9 +199,12 @@ if __name__ == '__main__':
         l = el.lev
         t.append(l)
         exp.append(el)
+    print(*expression.split()[2:], sep='\t')
+    print(*t, sep='\t')
     # вычисление выражения
     while len(exp) > 1:
         three = []
         find_max(exp, three, t_idx)
         t_idx += 1
     print(f'{expression.split(" ")[0]} = {exp[0].val}')
+
