@@ -1,7 +1,7 @@
 from math import *
 import lexemes_tree as lt
 
-my_expression = "S = ((1 / 2) * (a * b)) * abs(al)"
+my_expression = "S = ((1 / 2) * (a * b)) * sin(al)"
 
 
 def print_dict(my_dict):
@@ -26,7 +26,6 @@ def get_tetrads(corder):
     tetr_dict = {}
     t_idx = 1
     last_op = 0
-    stop = False
     while len(corder) > 1:
         for i in range(len(corder)):
             if corder[i] in lt.OPERATORS + lt.FUNCS:
@@ -108,7 +107,7 @@ if __name__ == "__main__":
     print("Введите значения преременной(ых)")
     lex_tree.get_variables_values(lex_tree.root)
     order_copy = order.copy()
-    tetrads_dict = get_tetrads(order_copy)
+    tetrads_dict = get_tetrads(order_copy[2:])
 
     tetrads_values = tetrads_dict.copy()
     calculate_tetrad_valuers(tetrads_values, lex_tree.variables_dict)
